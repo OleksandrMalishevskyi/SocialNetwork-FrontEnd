@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { AppRouter } from '@root/routes';
+import { BrowserRouter } from 'react-router-dom';
+import { useEffect } from 'react';
+import '@root/App.scss';
+import { socketService } from '@services/socket/socket.service';
+import Toast from '@components/toast/Toast';
+import { useSelector } from 'react-redux';
 
-function App() {
+const App = () => {
+  const { notifications } = useSelector((state) => state);
+
+  useEffect(() => {
+    socketService.setupSocketConnection();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {notifications && notifications.length > 0 && (
+        <Toast position="top-right" toastList={notifications} autoDelete={true} />
+      )}
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </>
   );
-}
-
+};
 export default App;
